@@ -1,22 +1,21 @@
 class Api::V1::ProjectsController < ApplicationController
   def index
-    @projects = Project.all.includes(:image)
+    @projects = Project.all
 
     render json: @projects, status: :ok
   end
 
   def show
-    @project = Project.includes(:image).find(params[:id])
+    @project = Project.find(params[:id])
 
-    render json: @project.to_json(include: { image: { only: :image } }), status: :ok
+    render json: @project, status: :ok
   end
 
   def create
-    @project = Project.new(project_params.except(:image))
-    @image = Image.new(image: params[:project][:image], project: @project)
+    @project = Project.new(project_params)
 
     if @project.save and @image.save
-      render json: @project.to_json(include: { image: { only: :image } }), status: :created
+      render json: @project, status: :created
     else
       render json: @project.errors, status: :unprocessable_entity
     end
@@ -24,10 +23,9 @@ class Api::V1::ProjectsController < ApplicationController
 
   def update
     @project = Project.find(params[:id])
-    @image = @project.image
 
-    if @project.update(project_params.except(:image)) and @image.update(image: params[:project][:image])
-      render json: @project.to_json(include: { image: { only: :image } }), status: :ok
+    if @project.update(project_params)
+      render json: @project, status: :ok
     else
       render json: @project.errors, status: :unprocessable_entity
     end
