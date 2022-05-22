@@ -6,9 +6,9 @@ class Api::V1::ProjectsController < ApplicationController
   end
 
   def show
-    @project = Project.find(params[:id])
+    @project = Project.includes(:images).find(params[:id])
 
-    render json: @project, status: :ok
+    render json: @project.to_json(include: { images: { only: :image } }), status: :ok
   end
 
   def create
@@ -41,6 +41,6 @@ class Api::V1::ProjectsController < ApplicationController
   private
 
   def project_params
-    params.require(:project).permit(:title, :description)
+    params.require(:project).permit(:title, :description, :image)
   end
 end
