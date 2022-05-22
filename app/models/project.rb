@@ -1,3 +1,3 @@
 class Project < ApplicationRecord
-  has_many :images, dependent: :destroy
+  has_one :image, dependent: :destroy
 end
