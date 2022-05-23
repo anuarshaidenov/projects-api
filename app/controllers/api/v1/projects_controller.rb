@@ -13,8 +13,9 @@ class Api::V1::ProjectsController < ApplicationController
 
   def create
     @project = Project.new(project_params)
+    @project.technologies = params[:project][:technologies]
 
-    if @project.save and @image.save
+    if @project.save
       render json: @project, status: :created
     else
       render json: @project.errors, status: :unprocessable_entity
@@ -41,6 +42,6 @@ class Api::V1::ProjectsController < ApplicationController
   private
 
   def project_params
-    params.require(:project).permit(:title, :description, :image)
+    params.require(:project).permit(:title, :description, :image, :technologies)
   end
 end
